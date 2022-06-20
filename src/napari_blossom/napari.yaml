@@ -14,15 +14,10 @@ contributions:
     - id: napari-blossom.make_sample_data
       python_name: napari_blossom._sample_data:make_sample_data
       title: Load sample data from Blossom
-    - id: napari-blossom.make_qwidget
-      python_name: napari_blossom._widget:ExampleQWidget
-      title: Make example QWidget
-    - id: napari-blossom.make_magic_widget
-      python_name: napari_blossom._widget:example_magic_widget
-      title: Make example magic widget
-    - id: napari-blossom.make_func_widget
-      python_name: napari_blossom._widget:example_function_widget
-      title: Make example function widget
+    - id: napari-blossom.model_segmentation
+      python_name: napari_blossom._widget:do_model_segmentation
+      title: Model segmentation
+
   readers:
     - command: napari-blossom.get_reader
       accepts_directories: false
@@ -39,10 +34,6 @@ contributions:
       display_name: Blossom
       key: unique_id.1
   widgets:
-    - command: napari-blossom.make_qwidget
-      display_name: Example QWidget
-    - command: napari-blossom.make_magic_widget
-      display_name: Example Magic Widget
-    - command: napari-blossom.make_func_widget
-      autogenerate: true
-      display_name: Example Function Widget
+    - command: napari-blossom.model_segmentation
+      display_name: Model segmentation
+
