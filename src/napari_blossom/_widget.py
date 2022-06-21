@@ -1,6 +1,6 @@
 from magicgui import magic_factory
 from qtpy.QtWidgets import QHBoxLayout, QPushButton, QWidget
-
+import cv2
 from napari.types import ImageData
 import os
 import tensorflow as tf
@@ -34,7 +34,7 @@ def do_image_segmentation(
     preds_test_t = (prediction > 0.2).astype(np.uint8)
     temp=np.squeeze(preds_test_t[0,:,:,0])*255
     
-    return resize(temp, dsize=(size_[1],size_[0]))
+    return cv2.resize(temp, dsize=(size_[1],size_[0]))
 
 @magic_factory(call_button="Run")
 def do_model_segmentation(
