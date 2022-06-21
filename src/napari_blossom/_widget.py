@@ -8,6 +8,7 @@ from tensorflow.keras import backend as K
 import numpy as np
 from skimage.transform import resize
 from napari.utils.notifications import show_info
+from focal_loss import BinaryFocalLoss
 
 def do_image_segmentation(
     layer: ImageData
