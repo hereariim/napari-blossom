@@ -11,4 +11,4 @@ def get_base_dir():
     return os.path.abspath(os.path.join(homedir, base_dir))
 
 def get_models_dir():
-     return os.path.join(get_base_dir(), "conidie")
+     return os.path.join(get_base_dir(), "napari-blossom")
