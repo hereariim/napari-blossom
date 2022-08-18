@@ -46,6 +46,6 @@ def get_data(filename=pathlib.Path.cwd()) -> ImageData:
 
 @magic_factory(call_button="Run")
 def do_model_segmentation(
-    layer: ImageData) -> LabelsData:
+    layer: ImageData) -> ImageData:
     show_info('Succes !')
     return do_image_segmentation(layer)
