@@ -1,7 +1,7 @@
 from magicgui import magic_factory
 from qtpy.QtWidgets import QHBoxLayout, QPushButton, QWidget
 import cv2
-from napari.types import ImageData
+from napari.types import ImageData, LabelsData
 import os
 import tensorflow as tf
 from tensorflow.keras import backend as K
@@ -38,8 +38,12 @@ def do_image_segmentation(
     
     return cv2.resize(temp, dsize=(size_[1],size_[0]))
 
+@magic_factory(call_button="Load",filename={"label": "Pick a file:"})
+def get_data(layer: ImageData,filename=pathlib.Path.cwd()) -> ImageData:
+    return imread(filename)[:,:,:3]
+
 @magic_factory(call_button="Run")
 def do_model_segmentation(
-    layer: ImageData) -> ImageData:
+    layer: ImageData) -> LabelsData:
     show_info('Succes !')
     return do_image_segmentation(layer)
