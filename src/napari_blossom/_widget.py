@@ -31,9 +31,8 @@ def do_image_segmentation(
     
     image_reshaped,size_ = redimension(layer)
     v = os.path.abspath(__file__)
-    p1 = os.path.join(paths.get_models_dir(),"src")
-    p2 = os.path.join(p1,"napari_blossom")
-    model_new = tf.keras.models.load_model(os.path.join(p2,"best_model_FL_BCE_0_5.h5"),custom_objects={'dice_coefficient': dice_coefficient})
+    p1 = os.path.join(paths.get_models_dir(),"napari_blossom")
+    model_new = tf.keras.models.load_model(os.path.join(p1,"best_model_FL_BCE_0_5.h5"),custom_objects={'dice_coefficient': dice_coefficient})
     prediction = model_new.predict(image_reshaped)
     preds_test_t = (prediction > 0.2).astype(np.uint8)
     temp=np.squeeze(preds_test_t[0,:,:,0])*255
