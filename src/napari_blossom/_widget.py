@@ -11,6 +11,7 @@ from napari.utils.notifications import show_info
 from focal_loss import BinaryFocalLoss
 import pathlib
 import napari_blossom.path as paths
+from skimage.io import imread
 
 def do_image_segmentation(
     layer: ImageData
@@ -40,7 +41,7 @@ def do_image_segmentation(
     return cv2.resize(temp, dsize=(size_[1],size_[0]))
 
 @magic_factory(call_button="Load",filename={"label": "Pick a file:"})
-def get_data(layer: ImageData,filename=pathlib.Path.cwd()) -> ImageData:
+def get_data(filename=pathlib.Path.cwd()) -> ImageData:
     return imread(filename)[:,:,:3]
 
 @magic_factory(call_button="Run")
