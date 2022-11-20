@@ -20,6 +20,9 @@ contributions:
     - id: napari-blossom.get_data_
       python_name: napari_blossom._widget:get_data
       title: Get data
+    - id: napari-blossom.save_as_zip
+      python_name: napari_blossom._widget:save_as_zip
+      title: Save zip
 
   readers:
     - command: napari-blossom.get_reader
@@ -41,4 +44,5 @@ contributions:
       display_name: Model segmentation
     - command: napari-blossom.get_data_
       display_name: Get data
-
+    - command: napari-blossom.save_as_zip
+      display_name: Save zip

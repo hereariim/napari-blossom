@@ -11,7 +11,12 @@ from napari.utils.notifications import show_info
 from focal_loss import BinaryFocalLoss
 import pathlib
 import napari_blossom.path as paths
-from skimage.io import imread
+from skimage.io import imread, imshow, imread_collection, concatenate_images, imsave
+from qtpy.QtWidgets import QTableWidget, QTableWidgetItem, QGridLayout, QPushButton, QFileDialog, QWidget, QListWidget
+import shutil
+import tempfile
+
+zip_dir = tempfile.TemporaryDirectory()
 
 def get_mosaic(img):
   A = []
@@ -79,6 +84,7 @@ def do_image_segmentation(
     preds_test = model_New.predict(X_ensemble, verbose=1)
     preds_test_opt = (preds_test > 0.2).astype(np.uint8)
     output_image = reconstruire(layer,preds_test_opt)
+    imsave(f'{zip_dir.name}\image_output.png',output_image)
     return np.squeeze(output_image[:,:,0])
 
 @magic_factory(call_button="Load",filename={"label": "Pick a file:"})
@@ -90,3 +96,10 @@ def do_model_segmentation(
     layer: ImageData) -> LabelsData:
     show_info('Succes !')
     return do_image_segmentation(layer)
+
+@magic_factory(call_button="save zip",layout="vertical")
+def save_as_zip():
+    save_button = QPushButton("Save as zip")
+    filename, _ = QFileDialog.getSaveFileName(save_button, "Save as zip", ".", "zip")
+    shutil.make_archive(filename, 'zip', zip_dir.name)
+    show_info('Compressed file done')
