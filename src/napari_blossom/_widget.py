@@ -84,7 +84,7 @@ def do_image_segmentation(
     preds_test = model_New.predict(X_ensemble, verbose=1)
     preds_test_opt = (preds_test > 0.2).astype(np.uint8)
     output_image = reconstruire(layer,preds_test_opt)
-    imsave(f'{zip_dir.name}\image_output.png',output_image)
+    imsave(os.path.join(zip_dir.name,'image_output.png'),output_image)
     return np.squeeze(output_image[:,:,0])
 
 @magic_factory(call_button="Load",filename={"label": "Pick a file:"})
