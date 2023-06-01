@@ -2,6 +2,7 @@ from magicgui import magic_factory
 from qtpy.QtWidgets import QHBoxLayout, QPushButton, QWidget
 import cv2
 from napari.types import ImageData, LabelsData
+import napari
 import os
 import tensorflow as tf
 from tensorflow.keras import backend as K
@@ -15,8 +16,8 @@ from skimage.io import imread, imshow, imread_collection, concatenate_images, im
 from qtpy.QtWidgets import QTableWidget, QTableWidgetItem, QGridLayout, QPushButton, QFileDialog, QWidget, QListWidget
 import shutil
 import tempfile
-
-zip_dir = tempfile.TemporaryDirectory()
+from napari import Viewer
+# zip_dir = tempfile.TemporaryDirectory()
 
 def get_mosaic(img):
   A = []
@@ -66,9 +67,7 @@ def dice_coefficient(y_true, y_pred):
     intersection = K.sum(y_true_f * y_pred_f)
     return (2. * intersection) / (K.sum(y_true_f * y_true_f) + K.sum(y_pred_f * y_pred_f) + eps) #eps pour éviter la division par 0 
 
-def do_image_segmentation(
-    layer: ImageData
-    ) -> ImageData:
+def do_image_segmentation(layer,image_viewer):
     
     img1_list = get_mosaic(layer)
 
@@ -84,22 +83,26 @@ def do_image_segmentation(
     preds_test = model_New.predict(X_ensemble, verbose=1)
     preds_test_opt = (preds_test > 0.2).astype(np.uint8)
     output_image = reconstruire(layer,preds_test_opt)
-    imsave(os.path.join(zip_dir.name,'image_output.png'),output_image)
-    return np.squeeze(output_image[:,:,0])
+    # imsave(os.path.join(zip_dir.name,'image_output.png'),output_image)
+    show_info('Succes !')
+    return image_viewer.add_labels(np.squeeze(output_image[:,:,0]))
 
 @magic_factory(call_button="Load",filename={"label": "Pick a file:"})
 def get_data(filename=pathlib.Path.cwd()) -> ImageData:
+    print(filename)
     return imread(filename)[:,:,:3]
 
 @magic_factory(call_button="Run")
 def do_model_segmentation(
-    layer: ImageData) -> LabelsData:
-    show_info('Succes !')
-    return do_image_segmentation(layer)
+    layer: ImageData,image_viewer: Viewer):
+    return do_image_segmentation(layer,image_viewer)
 
 @magic_factory(call_button="save zip",layout="vertical")
-def save_as_zip():
+def save_as_zip(layer: LabelsData):
+    zip_dir = tempfile.TemporaryDirectory()
     save_button = QPushButton("Save as zip")
     filename, _ = QFileDialog.getSaveFileName(save_button, "Save as zip", ".", "zip")
+    imsave(os.path.join(zip_dir.name,'mask_output.png'),layer)
+    # shutil.make_archive(filename, 'zip', zip_dir.name)
     shutil.make_archive(filename, 'zip', zip_dir.name)
     show_info('Compressed file done')
