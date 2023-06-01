@@ -21,7 +21,7 @@ and review the napari docs for plugin developers:
 https://napari.org/plugins/index.html
 -->
 
-This plugin was written by Herearii Metuarea, student intern at LARIS (French laboratory located in Angers, France) in Imhorphen, french scientific team lead by David Rousseau (Full professor).
+This plugin was written by Herearii Metuarea, student intern at LARIS (French laboratory located in Angers, France) in Imhorphen, french scientific team lead by David Rousseau (Full professor). This plugin was designed as part of the INVITE project.
 
 ## Installation
 
