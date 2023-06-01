@@ -23,13 +23,7 @@ https://napari.org/plugins/index.html
 
 This plugin was written by Herearii Metuarea, student intern at LARIS (French laboratory located in Angers, France) in Imhorphen, french scientific team lead by David Rousseau (Full professor). This plugin was designed as part of the european project INVITE.
 
-<img width="86" alt="Logo-IRHS-h_2022_png_large" src="https://github.com/hereariim/napari-blossom/assets/93375163/750bbd60-ef3e-4148-9cbd-8a32e11252a4"> ![Logo-INRAE](https://github.com/hereariim/napari-blossom/assets/93375163/d7cc95a1-f09c-4430-8ac8-8962c1046767)
-
-![logo2](https://github.com/hereariim/napari-blossom/assets/93375163/3b41c838-acc8-49a3-81f8-46d1305f43d3)
-
-![logolaris1](https://github.com/hereariim/napari-blossom/assets/93375163/bf92a903-5810-4c43-aa28-573f96f64ff9)
-
-![logo1](https://github.com/hereariim/napari-blossom/assets/93375163/f9361560-dd4f-49f4-955d-ffe41b5c014d)
+<img width="86" alt="Logo-IRHS-h_2022_png_large" src="https://github.com/hereariim/napari-blossom/assets/93375163/750bbd60-ef3e-4148-9cbd-8a32e11252a4"> ![Logo-INRAE](https://github.com/hereariim/napari-blossom/assets/93375163/d7cc95a1-f09c-4430-8ac8-8962c1046767) ![logo2](https://github.com/hereariim/napari-blossom/assets/93375163/3b41c838-acc8-49a3-81f8-46d1305f43d3) ![logolaris1](https://github.com/hereariim/napari-blossom/assets/93375163/bf92a903-5810-4c43-aa28-573f96f64ff9) ![logo1](https://github.com/hereariim/napari-blossom/assets/93375163/f9361560-dd4f-49f4-955d-ffe41b5c014d)
 
 ## Installation
 
