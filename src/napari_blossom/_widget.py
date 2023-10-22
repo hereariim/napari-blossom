@@ -47,7 +47,7 @@ def get_mosaic(img):
 
 def reconstruire(img1,K):
   ex,ey,ez=img1.shape
-  A = np.zeros((ex,ey,1), dtype=np.bool)
+  A = np.zeros((ex,ey,1), dtype=bool)
   h=ex
   l=ey
   z=1
@@ -66,7 +66,7 @@ def reconstruire(img1,K):
       if A[h1:h2,l1:l2].shape == K[n].shape:
         A[h1:h2,l1:l2] = K[n]
       else:
-        A[h1:h2,l1:l2] = np.zeros(A[h1:h2,l1:l2].shape, dtype=np.bool)
+        A[h1:h2,l1:l2] = np.zeros(A[h1:h2,l1:l2].shape, dtype=bool)
       n+=1
   return A
 
