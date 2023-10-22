@@ -14,12 +14,10 @@ contributions:
     - id: napari-blossom.make_sample_data
       python_name: napari_blossom._sample_data:make_sample_data
       title: Load sample data from Blossom
+
     - id: napari-blossom.model_segmentation
       python_name: napari_blossom._widget:do_model_segmentation
       title: Model segmentation
-    - id: napari-blossom.get_data_
-      python_name: napari_blossom._widget:get_data
-      title: Get data
     - id: napari-blossom.save_as_zip
       python_name: napari_blossom._widget:save_as_zip
       title: Save zip
@@ -41,8 +39,6 @@ contributions:
       key: unique_id.1
   widgets:
     - command: napari-blossom.model_segmentation
-      display_name: Model segmentation
-    - command: napari-blossom.get_data_
-      display_name: Get data
+      display_name: Segmentation
     - command: napari-blossom.save_as_zip
       display_name: Save zip

@@ -1,6 +1,7 @@
 from magicgui import magic_factory
 from qtpy.QtWidgets import QHBoxLayout, QPushButton, QWidget
 import cv2
+from tqdm import tqdm
 from napari.types import ImageData, LabelsData
 import napari
 import os
@@ -17,7 +18,16 @@ from qtpy.QtWidgets import QTableWidget, QTableWidgetItem, QGridLayout, QPushBut
 import shutil
 import tempfile
 from napari import Viewer
-# zip_dir = tempfile.TemporaryDirectory()
+from PIL import Image
+zip_dir = tempfile.TemporaryDirectory()
+
+A = []
+B = []
+MASK = []
+names = []
+path_folder = (zip_dir.name).replace("\\","/")
+current_item = []
+current_mask_selected_set = []
 
 def get_mosaic(img):
   A = []
@@ -67,10 +77,9 @@ def dice_coefficient(y_true, y_pred):
     intersection = K.sum(y_true_f * y_pred_f)
     return (2. * intersection) / (K.sum(y_true_f * y_true_f) + K.sum(y_pred_f * y_pred_f) + eps) #eps pour éviter la division par 0 
 
-def do_image_segmentation(layer,image_viewer):
+def single_image(layer,image_viewer):
     
     img1_list = get_mosaic(layer)
-
     model_New = tf.keras.models.load_model(os.path.join(paths.get_models_dir(),'best_model_W_BCE_chpping.h5'),custom_objects={'dice_coefficient': dice_coefficient})
 
     taille_p = 256
@@ -83,14 +92,45 @@ def do_image_segmentation(layer,image_viewer):
     preds_test = model_New.predict(X_ensemble, verbose=1)
     preds_test_opt = (preds_test > 0.2).astype(np.uint8)
     output_image = reconstruire(layer,preds_test_opt)
-    # imsave(os.path.join(zip_dir.name,'image_output.png'),output_image)
-    show_info('Succes !')
-    return image_viewer.add_labels(np.squeeze(output_image[:,:,0]))
+    output_image_bin = np.where(output_image[:,:,0],255,0)
+    output_image_bin = output_image_bin.astype("uint8")
+    return image_viewer.add_labels(output_image_bin,name="mask")
 
-@magic_factory(call_button="Load",filename={"label": "Pick a file:"})
-def get_data(filename=pathlib.Path.cwd()) -> ImageData:
-    print(filename)
-    return imread(filename)[:,:,:3]
+def multiple_image(layer,image_viewer):
+    nbr_image,h_,l_,channel_ = layer.shape
+    
+    model_New = tf.keras.models.load_model(os.path.join(paths.get_models_dir(),'best_model_W_BCE_chpping.h5'),custom_objects={'dice_coefficient': dice_coefficient})
+    empty_output = np.zeros((nbr_image,h_,l_),np.uint8)
+    
+    img_array = np.array(layer)
+    for ix in tqdm(range(nbr_image),desc="Processing image"):
+      current_img = img_array[ix,...]
+      img1_list = get_mosaic(current_img)
+      
+      taille_p = 256
+      X_ensemble = np.zeros((len(img1_list), taille_p, taille_p, 3), dtype=np.uint8)
+      for n in range(len(img1_list)):
+        sz1_x,sz2_x,sz3_x = img1_list[n].shape
+        if (sz1_x,sz2_x)==(256,256):
+          X_ensemble[n]=img1_list[n]
+
+      preds_test = model_New.predict(X_ensemble, verbose=1)
+      preds_test_opt = (preds_test > 0.2).astype(np.uint8)
+      output_image = reconstruire(current_img,preds_test_opt)
+      output_image_bin = np.where(output_image[:,:,0],255,0)
+      output_image_bin = output_image_bin.astype("uint8")
+      empty_output[ix,...] = output_image_bin
+
+    return image_viewer.add_labels(empty_output,name="stack mask")
+
+def do_image_segmentation(layer,image_viewer):
+    nbr_image = len(layer.shape)
+    if nbr_image==3:
+        return single_image(layer,image_viewer)
+    elif nbr_image==4:
+        return multiple_image(layer,image_viewer)
+    else:
+        show_info("Input isnot RGB image nor stack RGB image")
 
 @magic_factory(call_button="Run")
 def do_model_segmentation(
@@ -98,11 +138,34 @@ def do_model_segmentation(
     return do_image_segmentation(layer,image_viewer)
 
 @magic_factory(call_button="save zip",layout="vertical")
-def save_as_zip(layer: LabelsData):
-    zip_dir = tempfile.TemporaryDirectory()
+def save_as_zip(layer_mask: LabelsData,layer_RGB : ImageData):
     save_button = QPushButton("Save as zip")
     filename, _ = QFileDialog.getSaveFileName(save_button, "Save as zip", ".", "zip")
-    imsave(os.path.join(zip_dir.name,'mask_output.png'),layer)
-    # shutil.make_archive(filename, 'zip', zip_dir.name)
+
+    nbr_image = layer_RGB.shape
+    nbr_mask = layer_mask.shape
+    
+    if len(nbr_image)==4:
+        assert nbr_image[0]==nbr_mask[0], "MASK AND RGB SIZE NOT EQUAL"
+    elif len(nbr_image)==3:
+        assert len(nbr_mask)==2, "NOT A SINGLE MASK"
+    else:
+        assert len(nbr_image)==4 or len(nbr_mask)==2, "NOT STACK NOR SINGLE IMAGE"
+        
+
+    total_RGB = nbr_image[0]
+    img_array = np.array(layer_RGB)
+    msk_array = np.array(layer_mask)
+    for ix in tqdm(range(total_RGB),"Extracting"):
+        data_RGB = img_array[ix,...]
+        data_msk = msk_array[ix,...]
+        
+        im_RGB = Image.fromarray(data_RGB)
+        im_msk = Image.fromarray(data_msk)
+        
+        im_RGB1 = im_RGB.save(os.path.join(zip_dir.name,'RGB_'+str(ix)+".png"))
+        im_msk1 = im_msk.save(os.path.join(zip_dir.name,'MSK_'+str(ix)+".png"))
+
+
     shutil.make_archive(filename, 'zip', zip_dir.name)
     show_info('Compressed file done')
