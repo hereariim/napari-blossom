@@ -7,7 +7,7 @@ setup(
     author_email="herearii.metuarea@gmail.com",
     name='napari-blossom', 
     description='Segmentation of blossom apple tree images',  
-    version="0.1.3",    
+    version="0.1.4",    
     long_description=long_description, 
     long_description_content_type="text/markdown",  
     url='https://github.com/hereariim/napari-blossom', 
