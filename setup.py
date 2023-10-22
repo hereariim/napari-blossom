@@ -12,7 +12,7 @@ setup(
     long_description_content_type="text/markdown",  
     url='https://github.com/hereariim/napari-blossom', 
     packages=find_packages(),
-    python_requires=">=3.8",
+    python_requires="==3.8",
     install_requires=[
      'numpy==1.23.0',
     'magicgui==0.6.1',
