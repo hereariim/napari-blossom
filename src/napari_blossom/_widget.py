@@ -147,25 +147,34 @@ def save_as_zip(layer_mask: LabelsData,layer_RGB : ImageData):
     
     if len(nbr_image)==4:
         assert nbr_image[0]==nbr_mask[0], "MASK AND RGB SIZE NOT EQUAL"
+        
+        total_RGB = nbr_image[0]
+        img_array = np.array(layer_RGB)
+        msk_array = np.array(layer_mask)
+        for ix in tqdm(range(total_RGB),"Extracting"):
+            data_RGB = img_array[ix,...]
+            data_msk = msk_array[ix,...]
+            
+            im_RGB = Image.fromarray(data_RGB)
+            im_msk = Image.fromarray(data_msk)
+            
+            im_RGB1 = im_RGB.save(os.path.join(zip_dir.name,'RGB_'+str(ix)+".png"))
+            im_msk1 = im_msk.save(os.path.join(zip_dir.name,'MSK_'+str(ix)+".png"))
+        
     elif len(nbr_image)==3:
         assert len(nbr_mask)==2, "NOT A SINGLE MASK"
+        img_array = np.array(layer_RGB)
+        msk_array = np.array(layer_mask)
+        im_RGB = Image.fromarray(img_array)
+        im_msk = Image.fromarray(msk_array)
+            
+        im_RGB1 = im_RGB.save(os.path.join(zip_dir.name,"RGB.png"))
+        im_msk1 = im_msk.save(os.path.join(zip_dir.name,"MSK.png"))
     else:
         assert len(nbr_image)==4 or len(nbr_mask)==2, "NOT STACK NOR SINGLE IMAGE"
-        
-
-    total_RGB = nbr_image[0]
-    img_array = np.array(layer_RGB)
-    msk_array = np.array(layer_mask)
-    for ix in tqdm(range(total_RGB),"Extracting"):
-        data_RGB = img_array[ix,...]
-        data_msk = msk_array[ix,...]
-        
-        im_RGB = Image.fromarray(data_RGB)
-        im_msk = Image.fromarray(data_msk)
-        
-        im_RGB1 = im_RGB.save(os.path.join(zip_dir.name,'RGB_'+str(ix)+".png"))
-        im_msk1 = im_msk.save(os.path.join(zip_dir.name,'MSK_'+str(ix)+".png"))
-
-
     shutil.make_archive(filename, 'zip', zip_dir.name)
+    
+    for ix in os.listdir(zip_dir.name):
+        os.remove(os.path.join(zip_dir.name,ix))
+        
     show_info('Compressed file done')
