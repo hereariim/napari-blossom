@@ -39,6 +39,8 @@ To install latest development version :
 
 This module offers a plugin that allows you to segment the images of the apple tree flowers. As input, you can enter a **single image** with the image selection widget. Once the image is entered in the napari window, you can segment the apple blossoms with the image segmentation widget by running the run button. The segmented image will appear in the napari window.
 
+![Capture d'écran 2024-04-24 120758](https://github.com/hereariim/napari-blossom/assets/93375163/4f0c6ac7-b3a8-4849-9c5c-0ff5f35c8362)
+
 ## Contributing
 
 Contributions are very welcome. Tests can be run with [tox], please ensure
